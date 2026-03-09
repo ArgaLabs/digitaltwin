@@ -10,6 +10,7 @@ from typing import Any
 from digitaltwin.snowflake import generate_snowflake
 
 _BOT_USER_ID = generate_snowflake()
+_HUMAN_USER_ID = generate_snowflake()
 _DEFAULT_GUILD_ID = generate_snowflake()
 _DEFAULT_CHANNEL_ID = generate_snowflake()
 _EVERYONE_ROLE_ID = _DEFAULT_GUILD_ID  # @everyone role ID == guild ID
@@ -27,6 +28,27 @@ def _make_bot_user() -> dict:
         "global_name": "DigitalTwinBot",
         "avatar": None,
         "bot": True,
+        "system": False,
+        "mfa_enabled": False,
+        "banner": None,
+        "accent_color": None,
+        "locale": "en-US",
+        "verified": True,
+        "email": None,
+        "flags": 0,
+        "premium_type": 0,
+        "public_flags": 0,
+    }
+
+
+def _make_human_user() -> dict:
+    return {
+        "id": _HUMAN_USER_ID,
+        "username": "TestUser",
+        "discriminator": "1337",
+        "global_name": "Test User",
+        "avatar": None,
+        "bot": False,
         "system": False,
         "mfa_enabled": False,
         "banner": None,
@@ -146,13 +168,15 @@ class State:
 
     def reset(self) -> None:
         bot_user = _make_bot_user()
+        human_user = _make_human_user()
         default_guild = _make_default_guild()
         default_channel = _make_default_channel()
 
         self.bot_user: dict = bot_user
+        self.human_user: dict = human_user
         self.application: dict = _make_application()
 
-        self.users: dict[str, dict] = {bot_user["id"]: bot_user}
+        self.users: dict[str, dict] = {bot_user["id"]: bot_user, human_user["id"]: human_user}
         self.guilds: dict[str, dict] = {default_guild["id"]: default_guild}
         self.channels: dict[str, dict] = {default_channel["id"]: default_channel}
         self.messages: dict[str, dict] = {}
@@ -163,6 +187,19 @@ class State:
             default_guild["id"]: {
                 bot_user["id"]: {
                     "user": bot_user,
+                    "nick": None,
+                    "avatar": None,
+                    "roles": [],
+                    "joined_at": _now_iso(),
+                    "premium_since": None,
+                    "deaf": False,
+                    "mute": False,
+                    "flags": 0,
+                    "pending": False,
+                    "communication_disabled_until": None,
+                },
+                human_user["id"]: {
+                    "user": human_user,
                     "nick": None,
                     "avatar": None,
                     "roles": [],

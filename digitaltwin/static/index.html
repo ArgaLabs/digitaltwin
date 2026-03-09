@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin Frontend</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #36393f;
+            color: #dcddde;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #sidebar {
+            width: 240px;
+            background-color: #2f3136;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #202225;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #202225;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        #channel-list {
+            flex-grow: 1;
+            padding: 8px;
+            overflow-y: auto;
+        }
+
+        .channel-item {
+            padding: 8px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .channel-item:hover {
+            background-color: #393c43;
+            color: #fff;
+        }
+
+        .channel-item.active {
+            background-color: #393c43;
+            color: #fff;
+        }
+
+        .channel-item::before {
+            content: '#';
+            margin-right: 6px;
+            color: #8e9297;
+            font-size: 1.2em;
+        }
+
+        #main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #36393f;
+        }
+
+        #chat-header {
+            padding: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #202225;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        #chat-header::before {
+            content: '#';
+            margin-right: 6px;
+            color: #8e9297;
+            font-size: 1.5em;
+        }
+
+        #messages {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #5865f2;
+            margin-right: 16px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .bot-avatar {
+            background-color: #ed4245;
+        }
+
+        .message-content-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .author {
+            font-weight: 500;
+            color: #fff;
+            margin-right: 8px;
+        }
+
+        .bot-tag {
+            background-color: #5865f2;
+            color: white;
+            font-size: 0.65em;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+
+        .timestamp {
+            font-size: 0.75em;
+            color: #72767d;
+        }
+
+        .content {
+            color: #dcddde;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        #input-area {
+            padding: 16px;
+            background-color: #36393f;
+        }
+
+        #message-form {
+            display: flex;
+            background-color: #40444b;
+            border-radius: 8px;
+            padding: 10px 16px;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: #dcddde;
+            font-size: 1em;
+            outline: none;
+            font-family: inherit;
+        }
+
+        #message-input::placeholder {
+            color: #72767d;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="sidebar-header" id="guild-name">Loading...</div>
+        <div id="channel-list"></div>
+    </div>
+    <div id="main">
+        <div id="chat-header">Select a channel</div>
+        <div id="messages"></div>
+        <div id="input-area">
+            <form id="message-form">
+                <input type="text" id="message-input" placeholder="Message..." autocomplete="off" disabled>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentState = null;
+        let activeChannelId = null;
+
+        async function fetchState() {
+            try {
+                const response = await fetch('/_frontend/state');
+                const data = await response.json();
+                currentState = data;
+                render();
+            } catch (err) {
+                console.error('Failed to fetch state:', err);
+            }
+        }
+
+        function render() {
+            if (!currentState) return;
+
+            // Render guild
+            const guild = Object.values(currentState.guilds)[0];
+            if (guild) {
+                document.getElementById('guild-name').textContent = guild.name;
+            }
+
+            // Render channels
+            const channelList = document.getElementById('channel-list');
+            const channels = Object.values(currentState.channels);
+            
+            // Set first channel as active if none selected
+            if (!activeChannelId && channels.length > 0) {
+                activeChannelId = channels[0].id;
+            }
+
+            channelList.innerHTML = '';
+            channels.forEach(channel => {
+                const div = document.createElement('div');
+                div.className = `channel-item ${channel.id === activeChannelId ? 'active' : ''}`;
+                div.textContent = channel.name;
+                div.onclick = () => {
+                    activeChannelId = channel.id;
+                    render();
+                };
+                channelList.appendChild(div);
+            });
+
+            // Update chat header and input
+            const activeChannel = currentState.channels[activeChannelId];
+            if (activeChannel) {
+                document.getElementById('chat-header').textContent = activeChannel.name;
+                const input = document.getElementById('message-input');
+                input.placeholder = `Message #${activeChannel.name}`;
+                input.disabled = false;
+            }
+
+            // Render messages
+            const messagesDiv = document.getElementById('messages');
+            const isAtBottom = messagesDiv.scrollHeight - messagesDiv.scrollTop <= messagesDiv.clientHeight + 50;
+            
+            messagesDiv.innerHTML = '';
+            const messageIds = currentState.channel_messages[activeChannelId] || [];
+            
+            messageIds.forEach(msgId => {
+                const msg = currentState.messages[msgId];
+                if (!msg) return;
+
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message';
+
+                const isBot = msg.author.bot;
+                const avatar = document.createElement('div');
+                avatar.className = `avatar ${isBot ? 'bot-avatar' : ''}`;
+                avatar.textContent = msg.author.username.charAt(0).toUpperCase();
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'message-content-wrapper';
+
+                const header = document.createElement('div');
+                header.className = 'message-header';
+                
+                const authorSpan = document.createElement('span');
+                authorSpan.className = 'author';
+                authorSpan.textContent = msg.author.username;
+                header.appendChild(authorSpan);
+
+                if (isBot) {
+                    const botTag = document.createElement('span');
+                    botTag.className = 'bot-tag';
+                    botTag.textContent = 'BOT';
+                    header.appendChild(botTag);
+                }
+
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'timestamp';
+                try {
+                    const d = new Date(msg.timestamp);
+                    timeSpan.textContent = d.toLocaleString();
+                } catch (e) {
+                    timeSpan.textContent = msg.timestamp;
+                }
+                header.appendChild(timeSpan);
+
+                const content = document.createElement('div');
+                content.className = 'content';
+                content.textContent = msg.content;
+
+                wrapper.appendChild(header);
+                wrapper.appendChild(content);
+                
+                msgDiv.appendChild(avatar);
+                msgDiv.appendChild(wrapper);
+                messagesDiv.appendChild(msgDiv);
+            });
+
+            if (isAtBottom) {
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        document.getElementById('message-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!activeChannelId) return;
+
+            const input = document.getElementById('message-input');
+            const content = input.value.trim();
+            if (!content) return;
+
+            input.value = '';
+
+            try {
+                await fetch('/_frontend/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        channel_id: activeChannelId,
+                        content: content
+                    })
+                });
+                fetchState(); // Immediately fetch to update UI
+            } catch (err) {
+                console.error('Failed to send message:', err);
+                input.value = content; // restore on failure
+            }
+        });
+
+        // Initial fetch and start polling
+        fetchState();
+        setInterval(fetchState, 1000);
+    </script>
+</body>
+</html>

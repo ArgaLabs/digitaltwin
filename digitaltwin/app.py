@@ -8,6 +8,7 @@ from typing import Any
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.responses import Response
 
 from digitaltwin.auth import AuthMiddleware
@@ -16,6 +17,10 @@ from digitaltwin.errors import DiscordError
 from digitaltwin.mock import generate_mock_response
 from digitaltwin.ratelimit import RateLimitMiddleware
 from digitaltwin.spec_loader import Operation, get_operations, load_spec
+from digitaltwin.store.state import state
+from digitaltwin.snowflake import generate_snowflake
+from digitaltwin.gateway_ws import broadcast_event
+from datetime import datetime, timezone
 
 # Force handler registration by importing all handler modules
 import digitaltwin.handlers.users  # noqa: F401
@@ -63,6 +68,63 @@ def create_app() -> FastAPI:
     _register_extra_handlers(app)
 
     app.add_websocket_route("/gateway", gateway_ws_handler)
+
+    @app.get("/_frontend/state")
+    async def get_frontend_state():
+        return {
+            "guilds": state.guilds,
+            "channels": state.channels,
+            "users": state.users,
+            "messages": state.messages,
+            "channel_messages": state.channel_messages,
+            "bot_user": state.bot_user,
+            "human_user": getattr(state, "human_user", None),
+        }
+
+    @app.post("/_frontend/messages")
+    async def frontend_send_message(request: Request):
+        body = await request.json()
+        channel_id = body.get("channel_id")
+        content = body.get("content")
+        
+        msg_id = generate_snowflake()
+        message = {
+            "id": msg_id,
+            "type": 0,
+            "content": content,
+            "channel_id": channel_id,
+            "author": getattr(state, "human_user", state.bot_user),
+            "attachments": [],
+            "embeds": [],
+            "mentions": [],
+            "mention_roles": [],
+            "pinned": False,
+            "mention_everyone": False,
+            "tts": False,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "edited_timestamp": None,
+            "flags": 0,
+            "components": [],
+            "nonce": None,
+            "referenced_message": None,
+        }
+        state.messages[msg_id] = message
+        state.channel_messages.setdefault(channel_id, []).append(msg_id)
+        
+        ch = state.channels.get(channel_id)
+        if ch:
+            ch["last_message_id"] = msg_id
+            guild_id = ch.get("guild_id")
+            dispatch_msg = dict(message)
+            if guild_id:
+                dispatch_msg["guild_id"] = guild_id
+            await broadcast_event("MESSAGE_CREATE", dispatch_msg)
+            
+        return message
+
+    static_dir = Path(__file__).parent / "static"
+    static_dir.mkdir(exist_ok=True)
+    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 
     return app
 
