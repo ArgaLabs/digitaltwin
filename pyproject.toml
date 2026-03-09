@@ -1,0 +1,21 @@
+[project]
+name = "digitaltwin"
+version = "0.1.0"
+description = "Digital twin of the Discord HTTP API (v10) for local testing"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic>=2",
+    "httpx",
+]
+
+[project.optional-dependencies]
+dev = [
+    "datamodel-code-generator[http]",
+    "discord.py",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-httpx",
+]
