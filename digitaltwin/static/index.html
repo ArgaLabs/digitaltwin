@@ -69,6 +69,63 @@
             background-color: #36393f;
         }
 
+        #members {
+            width: 240px;
+            background-color: #2f3136;
+            border-left: 1px solid #202225;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #user-list {
+            padding: 8px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            color: #b5bac1;
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #5865f2;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .user-avatar.bot {
+            background-color: #ed4245;
+        }
+
+        .user-name {
+            color: #dcddde;
+            font-size: 0.95em;
+        }
+
+        .user-bot-tag {
+            margin-left: 6px;
+            background-color: #5865f2;
+            color: white;
+            font-size: 0.65em;
+            padding: 1px 4px;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
         #chat-header {
             padding: 16px;
             font-weight: bold;
@@ -196,6 +253,10 @@
             </form>
         </div>
     </div>
+    <div id="members">
+        <div class="sidebar-header">Users</div>
+        <div id="user-list"></div>
+    </div>
 
     <script>
         let currentState = null;
@@ -240,6 +301,39 @@
                     render();
                 };
                 channelList.appendChild(div);
+            });
+
+            // Render users (bot first so its mention name is obvious)
+            const userList = document.getElementById('user-list');
+            const users = Object.values(currentState.users || {}).sort((a, b) => {
+                if (a.bot && !b.bot) return -1;
+                if (!a.bot && b.bot) return 1;
+                return a.username.localeCompare(b.username);
+            });
+            userList.innerHTML = '';
+            users.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'user-item';
+
+                const avatar = document.createElement('div');
+                avatar.className = `user-avatar ${user.bot ? 'bot' : ''}`;
+                avatar.textContent = user.username.charAt(0).toUpperCase();
+
+                const name = document.createElement('span');
+                name.className = 'user-name';
+                name.textContent = user.username;
+
+                userDiv.appendChild(avatar);
+                userDiv.appendChild(name);
+
+                if (user.bot) {
+                    const botTag = document.createElement('span');
+                    botTag.className = 'user-bot-tag';
+                    botTag.textContent = 'BOT';
+                    userDiv.appendChild(botTag);
+                }
+
+                userList.appendChild(userDiv);
             });
 
             // Update chat header and input
