@@ -62,6 +62,111 @@
             font-size: 1.2em;
         }
 
+        .channel-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 8px 4px;
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #8e9297;
+            letter-spacing: 0.02em;
+        }
+
+        .add-channel-btn {
+            background: none;
+            border: none;
+            color: #8e9297;
+            cursor: pointer;
+            font-size: 1.4em;
+            line-height: 1;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+
+        .add-channel-btn:hover {
+            color: #dcddde;
+        }
+
+        #create-channel-form {
+            display: none;
+            padding: 4px 8px 8px;
+        }
+
+        #create-channel-form.visible {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        #create-channel-input {
+            background-color: #202225;
+            border: 1px solid #040405;
+            border-radius: 4px;
+            color: #dcddde;
+            padding: 6px 8px;
+            font-size: 0.9em;
+            font-family: inherit;
+            outline: none;
+        }
+
+        #create-channel-input:focus {
+            border-color: #5865f2;
+        }
+
+        #create-channel-input.input-error {
+            border-color: #ed4245;
+        }
+
+        .create-channel-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .create-channel-actions button {
+            flex: 1;
+            padding: 6px 0;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .btn-create {
+            background-color: #5865f2;
+            color: white;
+        }
+
+        .btn-create:hover {
+            background-color: #4752c4;
+        }
+
+        .btn-create:disabled {
+            background-color: #4752c4;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            background-color: transparent;
+            color: #b5bac1;
+        }
+
+        .btn-cancel:hover {
+            color: #dcddde;
+        }
+
+        .channel-error {
+            color: #ed4245;
+            font-size: 0.8em;
+            padding: 0 2px;
+            min-height: 0;
+            overflow: hidden;
+            transition: all 0.15s ease;
+        }
+
         #main {
             flex-grow: 1;
             display: flex;
@@ -242,6 +347,18 @@
 <body>
     <div id="sidebar">
         <div class="sidebar-header" id="guild-name">Loading...</div>
+        <div class="channel-section-header">
+            <span>Text Channels</span>
+            <button class="add-channel-btn" id="add-channel-btn" title="Create Channel">+</button>
+        </div>
+        <div id="create-channel-form">
+            <input type="text" id="create-channel-input" placeholder="new-channel" maxlength="100" autocomplete="off">
+            <div class="channel-error" id="channel-error"></div>
+            <div class="create-channel-actions">
+                <button class="btn-cancel" id="cancel-channel-btn" type="button">Cancel</button>
+                <button class="btn-create" id="confirm-channel-btn" type="button">Create</button>
+            </div>
+        </div>
         <div id="channel-list"></div>
     </div>
     <div id="main">
@@ -273,11 +390,112 @@
             }
         }
 
+        function getActiveGuild() {
+            if (!currentState) return null;
+            return Object.values(currentState.guilds)[0] || null;
+        }
+
+        // --- Create Channel UI ---
+        const addChannelBtn = document.getElementById('add-channel-btn');
+        const createChannelForm = document.getElementById('create-channel-form');
+        const createChannelInput = document.getElementById('create-channel-input');
+        const channelError = document.getElementById('channel-error');
+        const confirmChannelBtn = document.getElementById('confirm-channel-btn');
+        const cancelChannelBtn = document.getElementById('cancel-channel-btn');
+
+        function showCreateChannelForm() {
+            createChannelForm.classList.add('visible');
+            createChannelInput.value = '';
+            channelError.textContent = '';
+            createChannelInput.classList.remove('input-error');
+            createChannelInput.focus();
+        }
+
+        function hideCreateChannelForm() {
+            createChannelForm.classList.remove('visible');
+            channelError.textContent = '';
+            createChannelInput.classList.remove('input-error');
+        }
+
+        function showChannelError(msg) {
+            channelError.textContent = msg;
+            createChannelInput.classList.add('input-error');
+        }
+
+        function clearChannelError() {
+            channelError.textContent = '';
+            createChannelInput.classList.remove('input-error');
+        }
+
+        addChannelBtn.addEventListener('click', showCreateChannelForm);
+        cancelChannelBtn.addEventListener('click', hideCreateChannelForm);
+
+        createChannelInput.addEventListener('input', () => {
+            clearChannelError();
+            const name = createChannelInput.value.trim().toLowerCase().replace(/\s+/g, '-');
+            if (!name) return;
+            const channels = Object.values(currentState?.channels || {});
+            const guild = getActiveGuild();
+            const guildChannels = guild
+                ? channels.filter(c => c.guild_id === guild.id)
+                : channels;
+            const duplicate = guildChannels.some(c => c.name === name);
+            if (duplicate) {
+                showChannelError(`Channel #${name} already exists in this server`);
+            }
+        });
+
+        createChannelInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                createChannel();
+            } else if (e.key === 'Escape') {
+                hideCreateChannelForm();
+            }
+        });
+
+        confirmChannelBtn.addEventListener('click', createChannel);
+
+        async function createChannel() {
+            const guild = getActiveGuild();
+            if (!guild) return;
+
+            const raw = createChannelInput.value.trim().toLowerCase().replace(/\s+/g, '-');
+            if (!raw) {
+                showChannelError('Channel name cannot be empty');
+                return;
+            }
+
+            confirmChannelBtn.disabled = true;
+            try {
+                const res = await fetch(`/api/v10/guilds/${guild.id}/channels`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bot frontend-token',
+                    },
+                    body: JSON.stringify({ name: raw, type: 0 }),
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showChannelError(data.message || 'Failed to create channel');
+                    return;
+                }
+                hideCreateChannelForm();
+                activeChannelId = data.id;
+                await fetchState();
+            } catch (err) {
+                showChannelError('Network error — could not create channel');
+            } finally {
+                confirmChannelBtn.disabled = false;
+            }
+        }
+
         function render() {
             if (!currentState) return;
 
             // Render guild
-            const guild = Object.values(currentState.guilds)[0];
+            const guild = getActiveGuild();
             if (guild) {
                 document.getElementById('guild-name').textContent = guild.name;
             }

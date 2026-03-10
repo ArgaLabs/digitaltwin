@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
-from digitaltwin.errors import unknown_resource
+from digitaltwin.errors import DiscordError, unknown_resource
 from digitaltwin.handlers.registry import register
 from digitaltwin.snowflake import generate_snowflake
 from digitaltwin.store.state import state
@@ -179,12 +179,22 @@ async def create_guild_channel(request: Request, guild_id: str, **kwargs) -> dic
     except Exception as e:
         return e.to_response()
     body = await request.json()
+    name = body.get("name", "new-channel")
+    existing_ids = state.guild_channels.get(guild_id, [])
+    for cid in existing_ids:
+        ch = state.channels.get(cid)
+        if ch and ch["name"] == name:
+            return DiscordError(
+                50035,
+                f"Channel name '{name}' already exists in this guild",
+                400,
+            ).to_response()
     channel_id = generate_snowflake()
     channel = {
         "id": channel_id,
         "type": body.get("type", 0),
         "guild_id": guild_id,
-        "name": body.get("name", "new-channel"),
+        "name": name,
         "topic": body.get("topic"),
         "position": body.get("position", 0),
         "permission_overwrites": body.get("permission_overwrites", []),
