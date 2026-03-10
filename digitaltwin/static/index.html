@@ -195,6 +195,11 @@
             border-radius: 4px;
             margin-bottom: 2px;
             color: #b5bac1;
+            cursor: pointer;
+        }
+
+        .user-item:hover {
+            background-color: #393c43;
         }
 
         .user-avatar {
@@ -229,6 +234,269 @@
             padding: 1px 4px;
             border-radius: 3px;
             text-transform: uppercase;
+        }
+
+        /* Clickable author names in messages */
+        .author.clickable {
+            cursor: pointer;
+        }
+        .author.clickable:hover {
+            text-decoration: underline;
+        }
+
+        /* Profile popup */
+        .profile-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 100;
+        }
+        .profile-overlay.visible { display: block; }
+
+        .profile-popup {
+            position: fixed;
+            z-index: 101;
+            width: 340px;
+            background-color: #292b2f;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+
+        .profile-banner {
+            height: 60px;
+            background-color: #5865f2;
+        }
+
+        .profile-avatar-row {
+            display: flex;
+            align-items: flex-end;
+            padding: 0 16px;
+            margin-top: -24px;
+        }
+
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 4px solid #292b2f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.6em;
+            font-weight: bold;
+            background-color: #5865f2;
+        }
+
+        .profile-avatar.bot { background-color: #ed4245; }
+
+        .profile-body {
+            padding: 12px 16px 16px;
+        }
+
+        .profile-username {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .profile-discriminator {
+            color: #b5bac1;
+            font-weight: 400;
+        }
+
+        .profile-divider {
+            border: none;
+            border-top: 1px solid #3b3d44;
+            margin: 10px 0;
+        }
+
+        .profile-section-title {
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #b5bac1;
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
+        }
+
+        .profile-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .role-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            background-color: #2f3136;
+            border: 1px solid #3b3d44;
+            color: #dcddde;
+        }
+
+        .role-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .role-remove {
+            background: none;
+            border: none;
+            color: #8e9297;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 0 0 0 2px;
+            line-height: 1;
+        }
+
+        .role-remove:hover { color: #ed4245; }
+
+        .add-role-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background-color: #2f3136;
+            border: 1px dashed #3b3d44;
+            color: #8e9297;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .add-role-btn:hover {
+            border-color: #5865f2;
+            color: #5865f2;
+        }
+
+        /* Role dropdown */
+        .role-dropdown {
+            display: none;
+            position: absolute;
+            background-color: #18191c;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            padding: 6px;
+            z-index: 102;
+            width: 200px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .role-dropdown.visible { display: block; }
+
+        .role-dropdown-search {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #202225;
+            border: 1px solid #040405;
+            border-radius: 3px;
+            color: #dcddde;
+            padding: 6px 8px;
+            font-size: 0.85em;
+            font-family: inherit;
+            outline: none;
+            margin-bottom: 4px;
+        }
+
+        .role-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: #dcddde;
+        }
+        .role-dropdown-item:hover { background-color: #5865f240; }
+
+        .role-dropdown-divider {
+            border: none;
+            border-top: 1px solid #2f3136;
+            margin: 4px 0;
+        }
+
+        .role-dropdown-create {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: #5865f2;
+        }
+        .role-dropdown-create:hover { background-color: #5865f220; }
+
+        /* Create role inline form */
+        .create-role-form {
+            display: none;
+            padding: 6px 0 0;
+        }
+        .create-role-form.visible { display: flex; flex-direction: column; gap: 6px; }
+
+        .create-role-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .create-role-row input[type="text"] {
+            flex: 1;
+            background-color: #202225;
+            border: 1px solid #040405;
+            border-radius: 3px;
+            color: #dcddde;
+            padding: 5px 8px;
+            font-size: 0.85em;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .create-role-row input[type="color"] {
+            width: 30px;
+            height: 28px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+        }
+
+        .create-role-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .create-role-actions button {
+            flex: 1;
+            padding: 5px 0;
+            border: none;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        /* Member list role dots */
+        .user-roles-dots {
+            display: flex;
+            gap: 2px;
+            margin-left: auto;
+            padding-left: 4px;
+            flex-shrink: 0;
         }
 
         #chat-header {
@@ -371,13 +639,51 @@
         </div>
     </div>
     <div id="members">
-        <div class="sidebar-header">Users</div>
+        <div class="sidebar-header">Members</div>
         <div id="user-list"></div>
+    </div>
+
+    <!-- Profile popup -->
+    <div class="profile-overlay" id="profile-overlay"></div>
+    <div class="profile-popup" id="profile-popup" style="display:none;">
+        <div class="profile-banner" id="profile-banner"></div>
+        <div class="profile-avatar-row">
+            <div class="profile-avatar" id="profile-avatar"></div>
+        </div>
+        <div class="profile-body">
+            <div class="profile-username" id="profile-username"></div>
+            <hr class="profile-divider">
+            <div class="profile-section-title">Roles</div>
+            <div class="profile-roles" id="profile-roles"></div>
+        </div>
+    </div>
+
+    <!-- Role dropdown (appended to body, positioned absolutely) -->
+    <div class="role-dropdown" id="role-dropdown">
+        <input class="role-dropdown-search" id="role-dropdown-search" placeholder="Search or create role..." autocomplete="off">
+        <div id="role-dropdown-list"></div>
+        <hr class="role-dropdown-divider">
+        <div id="create-role-area">
+            <div class="role-dropdown-create" id="create-role-toggle">+ Create New Role</div>
+            <div class="create-role-form" id="create-role-form">
+                <div class="create-role-row">
+                    <input type="text" id="create-role-name" placeholder="Role name">
+                    <input type="color" id="create-role-color" value="#5865f2">
+                </div>
+                <div class="create-role-actions">
+                    <button class="btn-cancel" id="create-role-cancel">Cancel</button>
+                    <button class="btn-create" id="create-role-confirm">Create</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         let currentState = null;
         let activeChannelId = null;
+        let profileUserId = null;
+
+        const AUTH = 'Bot frontend-token';
 
         async function fetchState() {
             try {
@@ -385,6 +691,7 @@
                 const data = await response.json();
                 currentState = data;
                 render();
+                if (profileUserId) renderProfile(profileUserId);
             } catch (err) {
                 console.error('Failed to fetch state:', err);
             }
@@ -395,7 +702,26 @@
             return Object.values(currentState.guilds)[0] || null;
         }
 
-        // --- Create Channel UI ---
+        function getGuildRoles() {
+            const guild = getActiveGuild();
+            if (!guild) return [];
+            return (guild.roles || []).filter(r => r.name !== '@everyone');
+        }
+
+        function getMemberRoleIds(userId) {
+            const guild = getActiveGuild();
+            if (!guild || !currentState.members) return [];
+            const guildMembers = currentState.members[guild.id] || {};
+            const member = guildMembers[userId];
+            return member ? (member.roles || []) : [];
+        }
+
+        function roleColor(colorInt) {
+            if (!colorInt) return '#99aab5';
+            return '#' + colorInt.toString(16).padStart(6, '0');
+        }
+
+        // ─── Create Channel UI ────────────────────────────────
         const addChannelBtn = document.getElementById('add-channel-btn');
         const createChannelForm = document.getElementById('create-channel-form');
         const createChannelInput = document.getElementById('create-channel-input');
@@ -439,19 +765,14 @@
             const guildChannels = guild
                 ? channels.filter(c => c.guild_id === guild.id)
                 : channels;
-            const duplicate = guildChannels.some(c => c.name === name);
-            if (duplicate) {
+            if (guildChannels.some(c => c.name === name)) {
                 showChannelError(`Channel #${name} already exists in this server`);
             }
         });
 
         createChannelInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                createChannel();
-            } else if (e.key === 'Escape') {
-                hideCreateChannelForm();
-            }
+            if (e.key === 'Enter') { e.preventDefault(); createChannel(); }
+            else if (e.key === 'Escape') hideCreateChannelForm();
         });
 
         confirmChannelBtn.addEventListener('click', createChannel);
@@ -459,69 +780,251 @@
         async function createChannel() {
             const guild = getActiveGuild();
             if (!guild) return;
-
             const raw = createChannelInput.value.trim().toLowerCase().replace(/\s+/g, '-');
-            if (!raw) {
-                showChannelError('Channel name cannot be empty');
-                return;
-            }
-
+            if (!raw) { showChannelError('Channel name cannot be empty'); return; }
             confirmChannelBtn.disabled = true;
             try {
                 const res = await fetch(`/api/v10/guilds/${guild.id}/channels`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bot frontend-token',
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': AUTH },
                     body: JSON.stringify({ name: raw, type: 0 }),
                 });
                 const data = await res.json();
-                if (!res.ok) {
-                    showChannelError(data.message || 'Failed to create channel');
-                    return;
-                }
+                if (!res.ok) { showChannelError(data.message || 'Failed to create channel'); return; }
                 hideCreateChannelForm();
                 activeChannelId = data.id;
                 await fetchState();
             } catch (err) {
-                showChannelError('Network error — could not create channel');
-            } finally {
-                confirmChannelBtn.disabled = false;
+                showChannelError('Network error');
+            } finally { confirmChannelBtn.disabled = false; }
+        }
+
+        // ─── Profile popup ────────────────────────────────────
+        const profileOverlay = document.getElementById('profile-overlay');
+        const profilePopup = document.getElementById('profile-popup');
+        const roleDropdown = document.getElementById('role-dropdown');
+
+        function openProfile(userId, anchorEl) {
+            profileUserId = userId;
+            closeRoleDropdown();
+            renderProfile(userId);
+
+            const rect = anchorEl.getBoundingClientRect();
+            profilePopup.style.display = 'block';
+            profileOverlay.classList.add('visible');
+
+            let left = rect.left - 350;
+            let top = rect.top;
+            if (left < 8) left = rect.right + 10;
+            if (top + 380 > window.innerHeight) top = window.innerHeight - 390;
+            if (top < 8) top = 8;
+            profilePopup.style.left = left + 'px';
+            profilePopup.style.top = top + 'px';
+        }
+
+        function closeProfile() {
+            profileUserId = null;
+            profilePopup.style.display = 'none';
+            profileOverlay.classList.remove('visible');
+            closeRoleDropdown();
+        }
+
+        profileOverlay.addEventListener('click', closeProfile);
+
+        function renderProfile(userId) {
+            const user = currentState?.users?.[userId];
+            if (!user) return;
+            const guild = getActiveGuild();
+
+            const banner = document.getElementById('profile-banner');
+            banner.style.backgroundColor = user.bot ? '#ed4245' : '#5865f2';
+
+            const avatar = document.getElementById('profile-avatar');
+            avatar.className = `profile-avatar ${user.bot ? 'bot' : ''}`;
+            avatar.textContent = user.username.charAt(0).toUpperCase();
+
+            const uname = document.getElementById('profile-username');
+            uname.innerHTML = '';
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = user.username;
+            uname.appendChild(nameSpan);
+            if (user.discriminator && user.discriminator !== '0') {
+                const disc = document.createElement('span');
+                disc.className = 'profile-discriminator';
+                disc.textContent = '#' + user.discriminator;
+                uname.appendChild(disc);
+            }
+            if (user.bot) {
+                const tag = document.createElement('span');
+                tag.className = 'user-bot-tag';
+                tag.textContent = 'BOT';
+                uname.appendChild(tag);
+            }
+
+            const rolesContainer = document.getElementById('profile-roles');
+            rolesContainer.innerHTML = '';
+            const memberRoleIds = getMemberRoleIds(userId);
+            const allRoles = getGuildRoles();
+
+            memberRoleIds.forEach(rid => {
+                const role = allRoles.find(r => r.id === rid);
+                if (!role) return;
+                const pill = document.createElement('span');
+                pill.className = 'role-pill';
+                const dot = document.createElement('span');
+                dot.className = 'role-dot';
+                dot.style.backgroundColor = roleColor(role.color);
+                pill.appendChild(dot);
+                pill.appendChild(document.createTextNode(role.name));
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'role-remove';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.title = 'Remove role';
+                removeBtn.onclick = () => removeRole(userId, role.id);
+                pill.appendChild(removeBtn);
+                rolesContainer.appendChild(pill);
+            });
+
+            const addBtn = document.createElement('button');
+            addBtn.className = 'add-role-btn';
+            addBtn.textContent = '+';
+            addBtn.title = 'Add role';
+            addBtn.onclick = (e) => { e.stopPropagation(); toggleRoleDropdown(userId, addBtn); };
+            rolesContainer.appendChild(addBtn);
+        }
+
+        // ─── Role dropdown ────────────────────────────────────
+        let roleDropdownUserId = null;
+
+        function toggleRoleDropdown(userId, anchorEl) {
+            if (roleDropdown.classList.contains('visible')) { closeRoleDropdown(); return; }
+            roleDropdownUserId = userId;
+            const rect = anchorEl.getBoundingClientRect();
+            roleDropdown.style.left = rect.left + 'px';
+            roleDropdown.style.top = (rect.bottom + 4) + 'px';
+            roleDropdown.classList.add('visible');
+            document.getElementById('role-dropdown-search').value = '';
+            document.getElementById('create-role-form').classList.remove('visible');
+            renderRoleDropdownList('');
+            document.getElementById('role-dropdown-search').focus();
+        }
+
+        function closeRoleDropdown() {
+            roleDropdown.classList.remove('visible');
+            roleDropdownUserId = null;
+        }
+
+        document.getElementById('role-dropdown-search').addEventListener('input', (e) => {
+            renderRoleDropdownList(e.target.value.toLowerCase());
+        });
+
+        function renderRoleDropdownList(filter) {
+            const list = document.getElementById('role-dropdown-list');
+            list.innerHTML = '';
+            const allRoles = getGuildRoles();
+            const memberRoleIds = roleDropdownUserId ? getMemberRoleIds(roleDropdownUserId) : [];
+            const available = allRoles.filter(r => !memberRoleIds.includes(r.id) && r.name.toLowerCase().includes(filter));
+
+            if (available.length === 0) {
+                const empty = document.createElement('div');
+                empty.style.cssText = 'padding:6px 8px;color:#8e9297;font-size:0.85em;';
+                empty.textContent = allRoles.length === 0 ? 'No roles yet' : 'All roles assigned';
+                list.appendChild(empty);
+            }
+
+            available.forEach(role => {
+                const item = document.createElement('div');
+                item.className = 'role-dropdown-item';
+                const dot = document.createElement('span');
+                dot.className = 'role-dot';
+                dot.style.backgroundColor = roleColor(role.color);
+                item.appendChild(dot);
+                item.appendChild(document.createTextNode(role.name));
+                item.onclick = () => addRole(roleDropdownUserId, role.id);
+                list.appendChild(item);
+            });
+        }
+
+        // ─── Role API calls ───────────────────────────────────
+        async function addRole(userId, roleId) {
+            const guild = getActiveGuild();
+            if (!guild) return;
+            await fetch(`/api/v10/guilds/${guild.id}/members/${userId}/roles/${roleId}`, {
+                method: 'PUT',
+                headers: { 'Authorization': AUTH },
+            });
+            await fetchState();
+            closeRoleDropdown();
+        }
+
+        async function removeRole(userId, roleId) {
+            const guild = getActiveGuild();
+            if (!guild) return;
+            await fetch(`/api/v10/guilds/${guild.id}/members/${userId}/roles/${roleId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': AUTH },
+            });
+            await fetchState();
+        }
+
+        // ─── Create role ─────────────────────────────────────
+        document.getElementById('create-role-toggle').addEventListener('click', () => {
+            document.getElementById('create-role-form').classList.add('visible');
+            document.getElementById('create-role-name').value = '';
+            document.getElementById('create-role-color').value = '#5865f2';
+            document.getElementById('create-role-name').focus();
+        });
+
+        document.getElementById('create-role-cancel').addEventListener('click', () => {
+            document.getElementById('create-role-form').classList.remove('visible');
+        });
+
+        document.getElementById('create-role-confirm').addEventListener('click', createRole);
+        document.getElementById('create-role-name').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); createRole(); }
+        });
+
+        async function createRole() {
+            const guild = getActiveGuild();
+            if (!guild) return;
+            const name = document.getElementById('create-role-name').value.trim();
+            if (!name) return;
+            const hex = document.getElementById('create-role-color').value;
+            const color = parseInt(hex.replace('#', ''), 16);
+            const res = await fetch(`/api/v10/guilds/${guild.id}/roles`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': AUTH },
+                body: JSON.stringify({ name, color }),
+            });
+            if (res.ok) {
+                const role = await res.json();
+                document.getElementById('create-role-form').classList.remove('visible');
+                if (roleDropdownUserId) await addRole(roleDropdownUserId, role.id);
+                else await fetchState();
             }
         }
 
+        // ─── Main render ─────────────────────────────────────
         function render() {
             if (!currentState) return;
-
-            // Render guild
             const guild = getActiveGuild();
-            if (guild) {
-                document.getElementById('guild-name').textContent = guild.name;
-            }
+            if (guild) document.getElementById('guild-name').textContent = guild.name;
 
-            // Render channels
+            // Channels
             const channelList = document.getElementById('channel-list');
             const channels = Object.values(currentState.channels);
-            
-            // Set first channel as active if none selected
-            if (!activeChannelId && channels.length > 0) {
-                activeChannelId = channels[0].id;
-            }
+            if (!activeChannelId && channels.length > 0) activeChannelId = channels[0].id;
 
             channelList.innerHTML = '';
             channels.forEach(channel => {
                 const div = document.createElement('div');
                 div.className = `channel-item ${channel.id === activeChannelId ? 'active' : ''}`;
                 div.textContent = channel.name;
-                div.onclick = () => {
-                    activeChannelId = channel.id;
-                    render();
-                };
+                div.onclick = () => { activeChannelId = channel.id; render(); };
                 channelList.appendChild(div);
             });
 
-            // Render users (bot first so its mention name is obvious)
+            // Members list
             const userList = document.getElementById('user-list');
             const users = Object.values(currentState.users || {}).sort((a, b) => {
                 if (a.bot && !b.bot) return -1;
@@ -529,20 +1032,30 @@
                 return a.username.localeCompare(b.username);
             });
             userList.innerHTML = '';
+            const allRoles = getGuildRoles();
+
             users.forEach(user => {
                 const userDiv = document.createElement('div');
                 userDiv.className = 'user-item';
+                userDiv.onclick = (e) => openProfile(user.id, userDiv);
 
                 const avatar = document.createElement('div');
                 avatar.className = `user-avatar ${user.bot ? 'bot' : ''}`;
                 avatar.textContent = user.username.charAt(0).toUpperCase();
 
+                const nameWrap = document.createElement('div');
+                nameWrap.style.cssText = 'display:flex;flex-direction:column;min-width:0;';
+
                 const name = document.createElement('span');
                 name.className = 'user-name';
+                const memberRoleIds = getMemberRoleIds(user.id);
+                const topRole = allRoles.filter(r => memberRoleIds.includes(r.id)).sort((a, b) => b.position - a.position)[0];
+                if (topRole && topRole.color) name.style.color = roleColor(topRole.color);
                 name.textContent = user.username;
+                nameWrap.appendChild(name);
 
                 userDiv.appendChild(avatar);
-                userDiv.appendChild(name);
+                userDiv.appendChild(nameWrap);
 
                 if (user.bot) {
                     const botTag = document.createElement('span');
@@ -551,10 +1064,25 @@
                     userDiv.appendChild(botTag);
                 }
 
+                if (memberRoleIds.length > 0) {
+                    const dots = document.createElement('div');
+                    dots.className = 'user-roles-dots';
+                    memberRoleIds.slice(0, 4).forEach(rid => {
+                        const role = allRoles.find(r => r.id === rid);
+                        if (!role) return;
+                        const d = document.createElement('span');
+                        d.className = 'role-dot';
+                        d.style.backgroundColor = roleColor(role.color);
+                        d.title = role.name;
+                        dots.appendChild(d);
+                    });
+                    userDiv.appendChild(dots);
+                }
+
                 userList.appendChild(userDiv);
             });
 
-            // Update chat header and input
+            // Chat header & input
             const activeChannel = currentState.channels[activeChannelId];
             if (activeChannel) {
                 document.getElementById('chat-header').textContent = activeChannel.name;
@@ -563,13 +1091,12 @@
                 input.disabled = false;
             }
 
-            // Render messages
+            // Messages
             const messagesDiv = document.getElementById('messages');
             const isAtBottom = messagesDiv.scrollHeight - messagesDiv.scrollTop <= messagesDiv.clientHeight + 50;
-            
             messagesDiv.innerHTML = '';
             const messageIds = currentState.channel_messages[activeChannelId] || [];
-            
+
             messageIds.forEach(msgId => {
                 const msg = currentState.messages[msgId];
                 if (!msg) return;
@@ -581,16 +1108,22 @@
                 const avatar = document.createElement('div');
                 avatar.className = `avatar ${isBot ? 'bot-avatar' : ''}`;
                 avatar.textContent = msg.author.username.charAt(0).toUpperCase();
+                avatar.style.cursor = 'pointer';
+                avatar.onclick = (e) => { e.stopPropagation(); openProfile(msg.author.id, avatar); };
 
                 const wrapper = document.createElement('div');
                 wrapper.className = 'message-content-wrapper';
 
                 const header = document.createElement('div');
                 header.className = 'message-header';
-                
+
                 const authorSpan = document.createElement('span');
-                authorSpan.className = 'author';
+                authorSpan.className = 'author clickable';
                 authorSpan.textContent = msg.author.username;
+                const authorMemberRoles = getMemberRoleIds(msg.author.id);
+                const authorTopRole = allRoles.filter(r => authorMemberRoles.includes(r.id)).sort((a, b) => b.position - a.position)[0];
+                if (authorTopRole && authorTopRole.color) authorSpan.style.color = roleColor(authorTopRole.color);
+                authorSpan.onclick = (e) => { e.stopPropagation(); openProfile(msg.author.id, authorSpan); };
                 header.appendChild(authorSpan);
 
                 if (isBot) {
@@ -602,12 +1135,8 @@
 
                 const timeSpan = document.createElement('span');
                 timeSpan.className = 'timestamp';
-                try {
-                    const d = new Date(msg.timestamp);
-                    timeSpan.textContent = d.toLocaleString();
-                } catch (e) {
-                    timeSpan.textContent = msg.timestamp;
-                }
+                try { timeSpan.textContent = new Date(msg.timestamp).toLocaleString(); }
+                catch (e) { timeSpan.textContent = msg.timestamp; }
                 header.appendChild(timeSpan);
 
                 const content = document.createElement('div');
@@ -616,44 +1145,47 @@
 
                 wrapper.appendChild(header);
                 wrapper.appendChild(content);
-                
                 msgDiv.appendChild(avatar);
                 msgDiv.appendChild(wrapper);
                 messagesDiv.appendChild(msgDiv);
             });
 
-            if (isAtBottom) {
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }
+            if (isAtBottom) messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
+        // ─── Send message ─────────────────────────────────────
         document.getElementById('message-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!activeChannelId) return;
-
             const input = document.getElementById('message-input');
             const content = input.value.trim();
             if (!content) return;
-
             input.value = '';
-
             try {
                 await fetch('/_frontend/messages', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        channel_id: activeChannelId,
-                        content: content
-                    })
+                    body: JSON.stringify({ channel_id: activeChannelId, content })
                 });
-                fetchState(); // Immediately fetch to update UI
+                fetchState();
             } catch (err) {
                 console.error('Failed to send message:', err);
-                input.value = content; // restore on failure
+                input.value = content;
             }
         });
 
-        // Initial fetch and start polling
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (roleDropdown.classList.contains('visible') &&
+                !roleDropdown.contains(e.target) &&
+                !e.target.classList.contains('add-role-btn')) {
+                closeRoleDropdown();
+            }
+        });
+
+        // Stop popup clicks from closing
+        profilePopup.addEventListener('click', (e) => e.stopPropagation());
+
         fetchState();
         setInterval(fetchState, 1000);
     </script>

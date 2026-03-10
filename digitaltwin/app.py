@@ -79,6 +79,8 @@ def create_app() -> FastAPI:
             "channel_messages": state.channel_messages,
             "bot_user": state.bot_user,
             "human_user": getattr(state, "human_user", None),
+            "members": state.members,
+            "roles": state.roles,
         }
 
     @app.post("/_frontend/messages")
